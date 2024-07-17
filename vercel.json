@@ -1,0 +1,4 @@
+{
+    "buildCommand": "pnpm dlx prisma generate && next build",
+    "framework": "nextjs"
+}
