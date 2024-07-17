@@ -1,7 +1,7 @@
-import type { WordType } from "@/data/words";
-import { words } from "@/data/words";
-import type { Category, Prisma } from "@prisma/client";
-import { PrismaClient } from "@prisma/client";
+import type { WordType } from '@/data/words';
+import { words } from '@/data/words';
+import type { Category, Prisma } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 

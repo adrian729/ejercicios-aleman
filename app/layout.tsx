@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata } from 'next';
+import './globals.css';
 
 export const metadata: Metadata = {
-    title: "Ejercicios alemán",
-    description: "Ejercicios para aprender alemán",
+    title: 'Ejercicios alemán',
+    description: 'Ejercicios para aprender alemán',
 };
 
 export default function RootLayout({
