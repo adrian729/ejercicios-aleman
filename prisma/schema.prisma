@@ -1,0 +1,37 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("POSTGRES_PRISMA_URL")
+  directUrl  = env("POSTGRES_URL_NON_POOLING")
+  extensions = [uuid_ossp(map: "uuid-ossp")]
+}
+
+model Word {
+  id            String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  german        String
+  spanish       String
+  pronunciation String?
+  invAsociation String?
+  categories    WordCategory[]
+
+  @@unique([german, spanish], name: "translationId")
+}
+
+model Category {
+  id    String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name  String         @unique
+  words WordCategory[]
+}
+
+model WordCategory {
+  wordId     String   @db.Uuid
+  categoryId String   @db.Uuid
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  word       Word     @relation(fields: [wordId], references: [id], onDelete: Cascade)
+
+  @@id([wordId, categoryId])
+}
