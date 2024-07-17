@@ -1,3 +1,9 @@
 {
-  "extends": "next/core-web-vitals"
+  "rules": {
+    "comma-dangle": [2, "always-multiline"],
+    "indent": ["error", 4],
+    "semi": [2, "always"],
+    "quotes": [2, "single", { "avoidEscape": true }]
+  },
+  "extends": "next/core-web-vitals, prettier"
 }
