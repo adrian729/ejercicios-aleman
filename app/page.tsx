@@ -97,33 +97,6 @@ async function populateWords(): Promise<[Category[], WordWithCategories[]]> {
     return [populatedCategories, populatedWords];
 }
 
-async function getCategories(): Promise<Category[]> {
-    const categoriesToUpsert = [
-        {
-            name: "Animales",
-        },
-        {
-            name: "Naturaleza",
-        },
-        {
-            name: "Sustantivo",
-        },
-    ];
-
-    return Promise.all(
-        categoriesToUpsert.map(async (category) => {
-            const record = await prisma.category.upsert({
-                where: {
-                    name: category.name,
-                },
-                update: {},
-                create: category,
-            });
-            return record;
-        })
-    );
-}
-
 export default async function Home() {
     const [populatedCategories, populatedWords] = await populateWords();
 
