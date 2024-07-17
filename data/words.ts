@@ -87,7 +87,7 @@ export const verbs: WordType[] = [
             "A más COMER más forma de ESE crea el cuerpo (echa barriga y culo)",
     },
     {
-        german: "Lessen",
+        german: "Lesen",
         pronunciation: "lí:sen",
         spanish: "Leer",
         categories: ["Verbo"],
