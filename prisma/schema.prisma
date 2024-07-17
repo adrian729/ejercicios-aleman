@@ -11,27 +11,18 @@ datasource db {
 }
 
 model Word {
-  id            String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id            String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   german        String
   spanish       String
   pronunciation String?
   invAsociation String?
-  categories    WordCategory[]
+  categories    Category[]
 
   @@unique([german, spanish], name: "translationId")
 }
 
 model Category {
-  id    String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  name  String         @unique
-  words WordCategory[]
-}
-
-model WordCategory {
-  wordId     String   @db.Uuid
-  categoryId String   @db.Uuid
-  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  word       Word     @relation(fields: [wordId], references: [id], onDelete: Cascade)
-
-  @@id([wordId, categoryId])
+  id    String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name  String @unique
+  words Word[]
 }
