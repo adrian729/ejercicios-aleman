@@ -1,37 +1,7 @@
-import type { WordType } from '@/data/words';
-import { words } from '@/data/words';
 import type { Category, Prisma } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
-
-function getWordsCategories(words: WordType[]): string[] {
-    return words.reduce<string[]>((acc, word) => {
-        word.categories.forEach((category) => {
-            if (!acc.includes(category)) {
-                acc.push(category);
-            }
-        });
-        return acc;
-    }, []);
-}
-
-async function upsertCategories(categories: string[]): Promise<Category[]> {
-    return Promise.all(
-        categories.map(async (category) => {
-            const record = await prisma.category.upsert({
-                where: {
-                    name: category,
-                },
-                update: {},
-                create: {
-                    name: category,
-                },
-            });
-            return record;
-        })
-    );
-}
 
 type WordWithCategories = Prisma.WordGetPayload<{
     include: {
@@ -39,66 +9,13 @@ type WordWithCategories = Prisma.WordGetPayload<{
     };
 }>;
 
-async function upsertWords(words: WordType[]): Promise<WordWithCategories[]> {
-    return Promise.all(
-        words.map(async (word) => {
-            const {
-                german,
-                pronunciation,
-                spanish,
-                categories,
-                invAsociation,
-            } = word;
-
-            const record = await prisma.word.upsert({
-                where: {
-                    translationId: {
-                        german: word.german,
-                        spanish: word.spanish,
-                    },
-                },
-                update: {
-                    german,
-                    pronunciation,
-                    spanish,
-                    invAsociation,
-                    categories: {
-                        connectOrCreate: categories.map((category) => ({
-                            where: { name: category },
-                            create: { name: category },
-                        })),
-                    },
-                },
-                create: {
-                    german,
-                    pronunciation,
-                    spanish,
-                    invAsociation,
-                    categories: {
-                        connectOrCreate: categories.map((category) => ({
-                            where: { name: category },
-                            create: { name: category },
-                        })),
-                    },
-                },
-                include: {
-                    categories: true,
-                },
-            });
-            return record;
-        })
-    );
-}
-
-async function populateWords(): Promise<[Category[], WordWithCategories[]]> {
-    const categories = await getWordsCategories(words);
-    const populatedCategories = await upsertCategories(categories);
-    const populatedWords = await upsertWords(words);
-    return [populatedCategories, populatedWords];
-}
-
 export default async function Home() {
-    const [populatedCategories, populatedWords] = await populateWords();
+    const categories: Category[] = await prisma.category.findMany();
+    const words: WordWithCategories[] = await prisma.word.findMany({
+        include: {
+            categories: true,
+        },
+    });
 
     return (
         <main className="m-20">
@@ -108,7 +25,7 @@ export default async function Home() {
             <div className="border border-black flex flex-col items-center justify-center">
                 <h2 className="font-bold text-lg">Categories</h2>
                 <ul>
-                    {populatedCategories.map((category) => (
+                    {categories.map((category) => (
                         <li key={category.id}>{category.name}</li>
                     ))}
                 </ul>
@@ -117,7 +34,7 @@ export default async function Home() {
             <div className="border border-black flex flex-col items-center justify-center">
                 <h2 className="font-bold text-lg">Words</h2>
                 <ul>
-                    {populatedWords.map((word) => (
+                    {words.map((word) => (
                         <li key={word.id} className="border border-red-500">
                             {word.german} - {word.spanish}
                             <ul>
