@@ -156,6 +156,7 @@ export default function RandomWordDisplay({
                 </Button>
             </div>
             <WordCard
+                key={`word-${currentWordIndex}-${german}-${spanish}`}
                 german={german}
                 spanish={spanish}
                 pronunciation={pronunciation}

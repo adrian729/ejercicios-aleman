@@ -24,10 +24,10 @@ export default function SecretText({
     return (
         <span
             className={cn(
-                'px-1 w-fit cursor-pointer',
+                'w-full cursor-pointer',
                 secretTextVariants[variant],
                 (hideText || disabled) &&
-                    'text-foreground bg-foreground select-none',
+                    'inline-block text-foreground bg-foreground select-none',
                 className,
             )}
             onClick={() => {
