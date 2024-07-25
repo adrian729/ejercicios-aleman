@@ -7,10 +7,22 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { getCategoryNames } from '@/lib/category';
+import { CategoriesWithWords, fetchCategoriesWithWords } from '@/lib/data';
 import { getCategoryParam } from '@/lib/params';
-import { PrismaClient, Word } from '@prisma/client';
+import { Word } from '@prisma/client';
 
-const prisma = new PrismaClient();
+function getDisplayWords(
+    categories: CategoriesWithWords[],
+    categoryParam: string[],
+): Word[] {
+    return categories
+        .filter(
+            (cat) =>
+                categoryParam?.length === 0 || categoryParam.includes(cat.name),
+        )
+        .flatMap((cat) => cat.words);
+}
 
 export default async function Ejercicio1Page({
     searchParams,
@@ -19,21 +31,11 @@ export default async function Ejercicio1Page({
         category: string | string[];
     };
 }) {
-    let categoryParam = getCategoryParam(searchParams?.category);
+    const categoryParam = getCategoryParam(searchParams?.category);
+    const categories = await fetchCategoriesWithWords();
 
-    const categories = await prisma.category.findMany({
-        include: {
-            words: true,
-        },
-    });
-
-    const categoryNames = categories.map((category) => category.name);
-    const displayWords: Word[] = categories
-        .filter(
-            (cat) =>
-                categoryParam?.length === 0 || categoryParam.includes(cat.name),
-        )
-        .flatMap((cat) => cat.words);
+    const categoryNames = getCategoryNames(categories);
+    const displayWords = getDisplayWords(categories, categoryParam);
 
     return (
         <div className="m-auto w-4/6 flex flex-col items-center justify-start gap-4">
@@ -78,6 +80,7 @@ export default async function Ejercicio1Page({
 
             <section className="w-2/3">
                 <RandomWordDisplay
+                    key={categoryParam.join('-')}
                     words={displayWords}
                     initialIndex={Math.floor(
                         (displayWords.length - 1) * Math.random(),
