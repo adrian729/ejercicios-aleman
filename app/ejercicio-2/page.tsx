@@ -65,7 +65,10 @@ export default async function Ejercicio1Page({
             </Suspense>
 
             <Suspense fallback={<RandomWordDisplayWrapperSkeleton />}>
-                <RandomWordDisplayWrapper searchParams={searchParams} />
+                <RandomWordDisplayWrapper
+                    searchParams={searchParams}
+                    variant="spanish"
+                />
             </Suspense>
         </div>
     );

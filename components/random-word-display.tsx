@@ -1,10 +1,117 @@
 'use client';
 
-import WordCard, { WordCardSkeleton } from '@/components/ejercicio-1/word-card';
 import { ArchiveInfo } from '@/components/icons/archive-icon';
 import { Button } from '@/components/ui/button';
+import WordCard, { WordCardSkeleton } from '@/components/word-card';
 import { Word } from '@prisma/client';
 import { Dispatch, SetStateAction, useState } from 'react';
+
+interface RandomWordDisplayProps {
+    words: Word[];
+    initialIndex: number;
+    variant?: 'german' | 'spanish';
+}
+export default function RandomWordDisplay({
+    words,
+    initialIndex,
+    variant = 'german',
+}: RandomWordDisplayProps) {
+    const [displayWords, setDisplayWords] = useState<Word[]>(words);
+    const [archivedWords, setArchivedWords] = useState<Word[]>([]);
+    const [currentWordIndex, setCurrentWordIndex] = useState<number | null>(
+        initialIndex,
+    );
+
+    if (currentWordIndex === null || displayWords.length === 0) {
+        return (
+            <section>
+                <div className="py-2 flex justify-between items-center gap-2">
+                    <Button
+                        onClick={() =>
+                            resetExercise(
+                                archivedWords,
+                                setDisplayWords,
+                                setArchivedWords,
+                                setCurrentWordIndex,
+                            )
+                        }
+                    >
+                        Repetir ejercicio
+                    </Button>
+                </div>
+                <p>¡Felicidades! No quedan palabras por aprender.</p>
+            </section>
+        );
+    }
+
+    const { german, spanish, pronunciation, invAsociation } =
+        displayWords[currentWordIndex];
+
+    return (
+        <>
+            <div className="py-2 flex justify-between items-center gap-2">
+                <Button
+                    onClick={() =>
+                        getNextWord(
+                            currentWordIndex,
+                            displayWords,
+                            setCurrentWordIndex,
+                        )
+                    }
+                >
+                    Próxima palabra
+                </Button>
+                <Button
+                    onClick={() =>
+                        archiveWordAndGetNext(
+                            currentWordIndex,
+                            setDisplayWords,
+                            setArchivedWords,
+                            setCurrentWordIndex,
+                        )
+                    }
+                    variant="outline"
+                >
+                    <span className="w-6 pr-1 inline-block">
+                        <ArchiveInfo />
+                    </span>
+                    Archivar palabra
+                </Button>
+            </div>
+            <WordCard
+                key={`word-${currentWordIndex}-${german}-${spanish}`}
+                german={german}
+                spanish={spanish}
+                pronunciation={pronunciation}
+                invAsociation={invAsociation}
+                variant={variant}
+            />
+        </>
+    );
+}
+
+export function RandomWordDisplaySkeleton({
+    variant = 'german',
+}: {
+    variant?: 'german' | 'spanish';
+}) {
+    return (
+        <>
+            <div className="py-2 flex justify-between items-center gap-2">
+                <Button variant="secondary" className="cursor-not-allowed">
+                    Próxima palabra
+                </Button>
+                <Button variant="secondary" className="cursor-not-allowed">
+                    <span className="w-6 pr-1 inline-block">
+                        <ArchiveInfo />
+                    </span>
+                    Archivar palabra
+                </Button>
+            </div>
+            <WordCardSkeleton variant={variant} />
+        </>
+    );
+}
 
 function getNextWord(
     currentIndex: number,
@@ -83,104 +190,4 @@ function resetExercise(
         return newDisplayWords;
     });
     setArchivedWords([]);
-}
-
-interface RandomWordDisplayProps {
-    words: Word[];
-    initialIndex: number;
-}
-export default function RandomWordDisplay({
-    words,
-    initialIndex,
-}: RandomWordDisplayProps) {
-    const [displayWords, setDisplayWords] = useState<Word[]>(words);
-    const [archivedWords, setArchivedWords] = useState<Word[]>([]);
-    const [currentWordIndex, setCurrentWordIndex] = useState<number | null>(
-        initialIndex,
-    );
-
-    if (currentWordIndex === null || displayWords.length === 0) {
-        return (
-            <section>
-                <div className="py-2 flex justify-between items-center gap-2">
-                    <Button
-                        onClick={() =>
-                            resetExercise(
-                                archivedWords,
-                                setDisplayWords,
-                                setArchivedWords,
-                                setCurrentWordIndex,
-                            )
-                        }
-                    >
-                        Repetir ejercicio
-                    </Button>
-                </div>
-                <p>¡Felicidades! No quedan palabras por aprender.</p>
-            </section>
-        );
-    }
-
-    const { german, spanish, pronunciation, invAsociation } =
-        displayWords[currentWordIndex];
-
-    return (
-        <>
-            <div className="py-2 flex justify-between items-center gap-2">
-                <Button
-                    onClick={() =>
-                        getNextWord(
-                            currentWordIndex,
-                            displayWords,
-                            setCurrentWordIndex,
-                        )
-                    }
-                >
-                    Próxima palabra
-                </Button>
-                <Button
-                    onClick={() =>
-                        archiveWordAndGetNext(
-                            currentWordIndex,
-                            setDisplayWords,
-                            setArchivedWords,
-                            setCurrentWordIndex,
-                        )
-                    }
-                    variant="outline"
-                >
-                    <span className="w-6 pr-1 inline-block">
-                        <ArchiveInfo />
-                    </span>
-                    Archivar palabra
-                </Button>
-            </div>
-            <WordCard
-                key={`word-${currentWordIndex}-${german}-${spanish}`}
-                german={german}
-                spanish={spanish}
-                pronunciation={pronunciation}
-                invAsociation={invAsociation}
-            />
-        </>
-    );
-}
-
-export function RandomWordDisplaySkeleton() {
-    return (
-        <>
-            <div className="py-2 flex justify-between items-center gap-2">
-                <Button variant="secondary" className="cursor-not-allowed">
-                    Próxima palabra
-                </Button>
-                <Button variant="secondary" className="cursor-not-allowed">
-                    <span className="w-6 pr-1 inline-block">
-                        <ArchiveInfo />
-                    </span>
-                    Archivar palabra
-                </Button>
-            </div>
-            <WordCardSkeleton />
-        </>
-    );
 }

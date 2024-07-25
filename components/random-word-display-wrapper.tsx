@@ -1,6 +1,6 @@
 import RandomWordDisplay, {
     RandomWordDisplaySkeleton,
-} from '@/components/ejercicio-1/random-word-display';
+} from '@/components/random-word-display';
 import { CategoryWithWords, fetchCategoriesWithWords } from '@/lib/data';
 import { getCategoryParam } from '@/lib/params';
 import { Word } from '@prisma/client';
@@ -17,13 +17,17 @@ function getDisplayWords(
         .flatMap((cat) => cat.words);
 }
 
-export default async function RandomWordDisplayWrapper({
-    searchParams = { category: [] },
-}: {
+interface RandomWordDisplayWrapperProps {
     searchParams?: {
         category: string | string[];
     };
-}) {
+    variant?: 'german' | 'spanish';
+}
+
+export default async function RandomWordDisplayWrapper({
+    searchParams = { category: [] },
+    variant = 'german',
+}: RandomWordDisplayWrapperProps) {
     const categoryParam = getCategoryParam(searchParams?.category);
     const categories = await fetchCategoriesWithWords();
 
@@ -37,6 +41,7 @@ export default async function RandomWordDisplayWrapper({
                 initialIndex={Math.floor(
                     (displayWords.length - 1) * Math.random(),
                 )}
+                variant={variant}
             />
         </section>
     );
