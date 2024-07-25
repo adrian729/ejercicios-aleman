@@ -51,3 +51,30 @@ export default function WordCard({
         </Card>
     );
 }
+
+export function WordCardSkeleton() {
+    return (
+        <Card className="w-full">
+            <CardHeader>
+                <CardTitle>
+                    <SecretText text="skeletonTitle" disabled />
+                </CardTitle>
+                <CardDescription className="italic text-sm">
+                    <SecretText text="skeletonTitle" disabled />
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <span className="text-xs text-muted-foreground">español</span>
+                <p className="font-semibold">
+                    <SecretText text="skeletonSpanish" disabled />
+                </p>
+                <span className="text-xs text-muted-foreground">
+                    asociación inverosímil
+                </span>
+                <p className="italic text-sm">
+                    <SecretText text="skeleton inv asociation TEXT" disabled />
+                </p>
+            </CardContent>
+        </Card>
+    );
+}

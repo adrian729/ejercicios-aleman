@@ -11,12 +11,14 @@ const secretTextVariants = {
 export interface SecretTextProps extends HTMLAttributes<HTMLSpanElement> {
     text: string;
     variant?: SecretTextVariant;
+    disabled?: boolean;
 }
 
 export default function SecretText({
     className,
     text,
     variant = 'default',
+    disabled = false,
 }: SecretTextProps) {
     const [hideText, setHideText] = useState<boolean>(true);
     return (
@@ -24,7 +26,8 @@ export default function SecretText({
             className={cn(
                 'px-1 w-fit cursor-pointer',
                 secretTextVariants[variant],
-                hideText && 'text-foreground bg-foreground select-none',
+                (hideText || disabled) &&
+                    'text-foreground bg-foreground select-none',
                 className,
             )}
             onClick={() => {

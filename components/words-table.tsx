@@ -7,20 +7,31 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Prisma } from '@prisma/client';
+import { CategoryWithWords, fetchCategoriesWithWords } from '@/lib/data';
+import { getCategoryParam } from '@/lib/params';
 import { Fragment } from 'react';
 
-type CategoryWithWords = Prisma.CategoryGetPayload<{
-    include: {
-        words: true;
-    };
-}>;
+function getDisplayCategories(
+    categories: CategoryWithWords[],
+    categoryParam: string[],
+): CategoryWithWords[] {
+    return categories.filter(
+        (cat) => categoryParam.length === 0 || categoryParam.includes(cat.name),
+    );
+}
 
-export default function WordsTable({
-    categories,
+export default async function WordsTable({
+    searchParams = { category: [] },
 }: {
-    categories: CategoryWithWords[];
+    searchParams?: {
+        category: string | string[];
+    };
 }) {
+    const categoryParam = getCategoryParam(searchParams?.category);
+
+    const categories = await fetchCategoriesWithWords();
+    const displayCategories = getDisplayCategories(categories, categoryParam);
+
     return (
         <Table className="text-base">
             <TableCaption>
@@ -35,7 +46,7 @@ export default function WordsTable({
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {categories.map(({ id, name, words }) => (
+                {displayCategories.map(({ id, name, words }) => (
                     <Fragment key={`cat-${id}`}>
                         <TableRow>
                             <TableCell
@@ -69,6 +80,31 @@ export default function WordsTable({
                         )}
                     </Fragment>
                 ))}
+            </TableBody>
+        </Table>
+    );
+}
+
+export function WordsTableSkeleton() {
+    return (
+        <Table className="text-base">
+            <TableCaption>
+                Lista de palabras en alemán y sus traducciones.
+            </TableCaption>
+            <TableHeader>
+                <TableRow>
+                    <TableHead>Alemán</TableHead>
+                    <TableHead>Pronunciación</TableHead>
+                    <TableHead>Español</TableHead>
+                    <TableHead>Asociación inverosímil</TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                <TableRow>
+                    <TableCell colSpan={4} className="text-center">
+                        Cargando...
+                    </TableCell>
+                </TableRow>
             </TableBody>
         </Table>
     );

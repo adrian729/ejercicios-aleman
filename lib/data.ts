@@ -8,19 +8,27 @@ type WordId = Prisma.WordGetPayload<{
     }
 }>;
 
-export type CategoriesWithWords = Prisma.CategoryGetPayload<{
+export type CategoryWithWords = Prisma.CategoryGetPayload<{
     include: {
         words: true;
     }
 }>;
 
-export async function fetchCategoriesWithWords(): Promise<CategoriesWithWords[]> {
+export async function fetchCategoriesWithWords(): Promise<CategoryWithWords[]> {
     return await prisma.category.findMany({
         include: {
             words: true,
         },
     });
 
+}
+
+export async function fetchCategoryNames(): Promise<string[]> {
+    return await prisma.category.findMany({
+        select: {
+            name: true,
+        },
+    }).then((categories) => categories.map((cat) => cat.name));
 }
 
 // export async function getWordIds(categories: string[] = []): Promise<WordId[]> {

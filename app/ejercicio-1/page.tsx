@@ -1,5 +1,7 @@
 import CategorySelector from '@/components/category-selector';
-import RandomWordDisplay from '@/components/ejercicio-1/random-word-display';
+import RandomWordDisplayWrapper, {
+    RandomWordDisplayWrapperSkeleton,
+} from '@/components/ejercicio-1/random-word-display-wrapper';
 import { InfoIcon } from '@/components/icons/info-icon';
 import {
     Tooltip,
@@ -7,13 +9,12 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { getCategoryNames } from '@/lib/category';
-import { CategoriesWithWords, fetchCategoriesWithWords } from '@/lib/data';
-import { getCategoryParam } from '@/lib/params';
+import { CategoryWithWords, fetchCategoryNames } from '@/lib/data';
 import { Word } from '@prisma/client';
+import { Suspense } from 'react';
 
 function getDisplayWords(
-    categories: CategoriesWithWords[],
+    categories: CategoryWithWords[],
     categoryParam: string[],
 ): Word[] {
     return categories
@@ -31,11 +32,7 @@ export default async function Ejercicio1Page({
         category: string | string[];
     };
 }) {
-    const categoryParam = getCategoryParam(searchParams?.category);
-    const categories = await fetchCategoriesWithWords();
-
-    const categoryNames = getCategoryNames(categories);
-    const displayWords = getDisplayWords(categories, categoryParam);
+    const categoryNames = await fetchCategoryNames();
 
     return (
         <div className="m-auto w-4/6 flex flex-col items-center justify-start gap-4">
@@ -78,15 +75,9 @@ export default async function Ejercicio1Page({
 
             <CategorySelector categories={categoryNames} />
 
-            <section className="w-2/3">
-                <RandomWordDisplay
-                    key={categoryParam.join('-')}
-                    words={displayWords}
-                    initialIndex={Math.floor(
-                        (displayWords.length - 1) * Math.random(),
-                    )}
-                />
-            </section>
+            <Suspense fallback={<RandomWordDisplayWrapperSkeleton />}>
+                <RandomWordDisplayWrapper searchParams={searchParams} />
+            </Suspense>
         </div>
     );
 }

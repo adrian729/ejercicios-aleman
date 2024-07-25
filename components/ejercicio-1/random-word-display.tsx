@@ -1,6 +1,6 @@
 'use client';
 
-import WordCard from '@/components/ejercicio-1/word-card';
+import WordCard, { WordCardSkeleton } from '@/components/ejercicio-1/word-card';
 import { ArchiveInfo } from '@/components/icons/archive-icon';
 import { Button } from '@/components/ui/button';
 import { Word } from '@prisma/client';
@@ -125,7 +125,7 @@ export default function RandomWordDisplay({
         displayWords[currentWordIndex];
 
     return (
-        <section>
+        <>
             <div className="py-2 flex justify-between items-center gap-2">
                 <Button
                     onClick={() =>
@@ -161,6 +161,25 @@ export default function RandomWordDisplay({
                 pronunciation={pronunciation}
                 invAsociation={invAsociation}
             />
-        </section>
+        </>
+    );
+}
+
+export function RandomWordDisplaySkeleton() {
+    return (
+        <>
+            <div className="py-2 flex justify-between items-center gap-2">
+                <Button variant="secondary" className="cursor-not-allowed">
+                    Próxima palabra
+                </Button>
+                <Button variant="secondary" className="cursor-not-allowed">
+                    <span className="w-6 pr-1 inline-block">
+                        <ArchiveInfo />
+                    </span>
+                    Archivar palabra
+                </Button>
+            </div>
+            <WordCardSkeleton />
+        </>
     );
 }
