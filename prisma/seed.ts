@@ -28,8 +28,8 @@ async function main() {
         const record = await prisma.word.upsert({
             where: {
                 translationId: {
-                    german: word.german,
-                    spanish: word.spanish,
+                    german,
+                    spanish,
                 },
             },
             update: {},

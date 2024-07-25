@@ -65,7 +65,7 @@ export const verbs: WordType[] = [
     },
     {
         german: 'Können',
-        pronunciation: 'k<u>oé</u>nen',
+        pronunciation: 'ko\u0332é\u0332nen',
         spanish: 'Poder',
         categories: ['Verbo'],
         invAsociation: 'CONAN el bárbaro tenía mucho PODER',

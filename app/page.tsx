@@ -1,51 +1,40 @@
-import type { Category, Prisma } from '@prisma/client';
+import CategorySelector from '@/components/category-selector';
+import WordsTable from '@/components/words-table';
+import { getCategoryParam } from '@/lib/params';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-type WordWithCategories = Prisma.WordGetPayload<{
-    include: {
-        categories: true;
+export default async function TablasPage({
+    searchParams = { category: [] },
+}: {
+    searchParams?: {
+        category: string | string[];
     };
-}>;
+}) {
+    let categoryParam = getCategoryParam(searchParams?.category);
 
-export default async function Home() {
-    const categories: Category[] = await prisma.category.findMany();
-    const words: WordWithCategories[] = await prisma.word.findMany({
+    const categories = await prisma.category.findMany({
         include: {
-            categories: true,
+            words: true,
         },
     });
 
+    const categoryNames = categories.map((category) => category.name);
+    const displayCategories = categories.filter(
+        (cat) =>
+            categoryParam?.length === 0 || categoryParam.includes(cat.name),
+    );
+
     return (
-        <main className="m-20">
-            <h1>Ejercicios alemán</h1>
-            <p>Ejercicios para aprender alemán</p>
+        <div className="m-auto w-4/6 flex flex-col items-center justify-start gap-4">
+            <h1 className="text-xl font-bold">Tablas de vocabulario</h1>
 
-            <div className="border border-black flex flex-col items-center justify-center">
-                <h2 className="font-bold text-lg">Categories</h2>
-                <ul>
-                    {categories.map((category) => (
-                        <li key={category.id}>{category.name}</li>
-                    ))}
-                </ul>
-            </div>
+            <CategorySelector categories={categoryNames} />
 
-            <div className="border border-black flex flex-col items-center justify-center">
-                <h2 className="font-bold text-lg">Words</h2>
-                <ul>
-                    {words.map((word) => (
-                        <li key={word.id} className="border border-red-500">
-                            {word.german} - {word.spanish}
-                            <ul>
-                                {word.categories.map(({ id, name }) => (
-                                    <li key={id}>{name}</li>
-                                ))}
-                            </ul>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        </main>
+            <section className="w-full">
+                <WordsTable categories={displayCategories} />
+            </section>
+        </div>
     );
 }

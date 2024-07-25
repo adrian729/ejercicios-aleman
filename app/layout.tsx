@@ -1,3 +1,4 @@
+import Sidebar from '@/components/sidebar';
 import { cn } from '@/lib/utils';
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
@@ -22,11 +23,14 @@ export default function RootLayout({
         <html lang="es">
             <body
                 className={cn(
-                    'min-h-screen bg-background font-sans antialiased',
+                    'min-h-screen bg-background font-sans antialiased flex h-screen overflow-hidden',
                     fontSans.variable,
                 )}
             >
-                {children}
+                <Sidebar />
+                <main className="flex-grow px-12 py-6 overflow-y-auto">
+                    {children}
+                </main>
             </body>
         </html>
     );
