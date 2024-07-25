@@ -39,7 +39,7 @@ export default function Sidebar() {
                     </NavigationMenuTrigger>
                     <NavigationMenuContent className="relative">
                         <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                            <li className="row-span-3">
+                            {/* <li className="row-span-3">
                                 <NavigationMenuLink asChild>
                                     <a
                                         className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
@@ -56,7 +56,7 @@ export default function Sidebar() {
                                         </p>
                                     </a>
                                 </NavigationMenuLink>
-                            </li>
+                            </li> */}
                             <ListItem href="/ejercicio-1" title="Ejercicio 1">
                                 Ejercicio de repaso pronunciación y
                                 alemán-español.
@@ -64,9 +64,9 @@ export default function Sidebar() {
                             <ListItem href="/ejercicio-2" title="Ejercicio 2">
                                 Ejercicio de repaso español-alemán.
                             </ListItem>
-                            <ListItem href="/ejercicio-3" title="Typography">
+                            {/* <ListItem href="/ejercicio-3" title="Typography">
                                 Styles for headings, paragraphs, lists...etc
-                            </ListItem>
+                            </ListItem> */}
                         </ul>
                     </NavigationMenuContent>
                 </NavigationMenuItem>
