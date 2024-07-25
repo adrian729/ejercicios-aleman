@@ -15,8 +15,9 @@ export default async function TablasPage({
     return (
         <div className="m-auto w-4/6 flex flex-col items-center justify-start gap-4">
             <h1 className="text-xl font-bold">Tablas de vocabulario</h1>
-
-            <CategorySelector categories={categoryNames} />
+            <Suspense>
+                <CategorySelector categories={categoryNames} />
+            </Suspense>
 
             <section className="w-full">
                 <Suspense fallback={<WordsTableSkeleton />}>

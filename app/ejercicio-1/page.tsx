@@ -9,21 +9,8 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { CategoryWithWords, fetchCategoryNames } from '@/lib/data';
-import { Word } from '@prisma/client';
+import { fetchCategoryNames } from '@/lib/data';
 import { Suspense } from 'react';
-
-function getDisplayWords(
-    categories: CategoryWithWords[],
-    categoryParam: string[],
-): Word[] {
-    return categories
-        .filter(
-            (cat) =>
-                categoryParam?.length === 0 || categoryParam.includes(cat.name),
-        )
-        .flatMap((cat) => cat.words);
-}
 
 export default async function Ejercicio1Page({
     searchParams,
@@ -73,7 +60,9 @@ export default async function Ejercicio1Page({
                 </TooltipProvider>
             </h1>
 
-            <CategorySelector categories={categoryNames} />
+            <Suspense>
+                <CategorySelector categories={categoryNames} />
+            </Suspense>
 
             <Suspense fallback={<RandomWordDisplayWrapperSkeleton />}>
                 <RandomWordDisplayWrapper searchParams={searchParams} />

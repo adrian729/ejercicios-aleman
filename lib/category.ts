@@ -1,5 +1,5 @@
-import { CategoriesWithWords } from '@/lib/data';
+import { CategoryWithWords } from '@/lib/data';
 
-export function getCategoryNames(categories: CategoriesWithWords[]) {
+export function getCategoryNames(categories: CategoryWithWords[]) {
     return categories.map((category) => category.name);
 }
